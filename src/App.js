@@ -5,23 +5,27 @@ function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/questionsRest')
-    .then(response => response.json())
-    .then(data => {console.log(data)
-      setData((data))
-    })
-    .catch(err => console.error(err))
+    fetch('http://localhost:8080/quizRest')
+      .then(response => response.json())
+      .then(data => {
+        console.log(data)
+        setData((data))
+      })
+      .catch(err => console.error(err))
   }, [])
 
   return (
     <div className="App">
-      <ul>
-          {data.map((item) => (
-            <li key={item.id}>
-              {item.content}
-            </li>
-          ))}
-        </ul>
+      {data.map((item) => (
+        <div key={item.id}>
+          <h1>{item.name}</h1>
+          <ul>
+            {item.questions.map((i) => (
+              <li key={i.id}>{i.content}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
