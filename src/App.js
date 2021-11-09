@@ -5,7 +5,7 @@ function App() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8080/quizRest')
+    fetch('https://kyselybackend.herokuapp.com/quizRest')
       .then(response => response.json())
       .then(data => {
         console.log(data)
