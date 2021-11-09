@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
+const OpenQuestions = (quiz) => {
+  return(
+  <div>
+    <ul>
+      <li>
+          {quiz.id}
+        </li>
+      </ul>
+  </div>
+  )
+}
+
 function App() {
 
   const [data, setData] = useState([]);
@@ -14,16 +26,22 @@ function App() {
       .catch(err => console.error(err))
   }, [])
 
+  
+
   return (
     <div className="App">
+      <h1>Quiz</h1>
       {data.map((item) => (
         <div key={item.id}>
-          <h1>{item.name}</h1>
+          <div>{item.name}<a href="/questions"> Answer</a></div>
           <ul>
             {item.questions.map((i) => (
               <li key={i.id}>{i.content}</li>
-            ))}
+    
+              ))}
           </ul>
+          
+          <OpenQuestions quiz={item} />
         </div>
       ))}
     </div>
