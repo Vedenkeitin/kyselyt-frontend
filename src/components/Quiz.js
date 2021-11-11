@@ -26,6 +26,7 @@ function Quiz() {
 
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [questions, setQuestions] = useState({});
 
   //hakee datan
   useEffect(() => {
@@ -42,6 +43,7 @@ function Quiz() {
   const openQuestions = (questions) => {
     console.log(questions);
     setOpen(true);
+    setQuestions(questions);
     const content = questions.map((q) =>
         <div key={q.id}>
           <p>{q.content}</p>
@@ -106,7 +108,7 @@ function Quiz() {
                     </Toolbar>
                     </AppBar>
                     <List>
-                      <openQuestions/>
+                      {questions[0].content}
                     </List>
                 </Dialog>
               </TableCell>
