@@ -42,6 +42,14 @@ function Quiz() {
   const openQuestions = (questions) => {
     console.log(questions);
     setOpen(true);
+    const content = questions.map((q) =>
+        <div key={q.id}>
+          <p>{q.content}</p>
+        </div>
+      );
+        return (
+          <div>{content}</div>
+    );
   };
 
   //sulkee kyseisen kyslyn kysymykset
@@ -67,7 +75,7 @@ function Quiz() {
             >
               <TableCell component="th" scope="row">{row.name}</TableCell>
               <TableCell component="th" scope="row">
-                  <Button onClick={() => openQuestions(row.id)}>
+                  <Button onClick={() => openQuestions(row.questions)}>
                       Answer
                   </Button>
 
@@ -98,7 +106,7 @@ function Quiz() {
                     </Toolbar>
                     </AppBar>
                     <List>
-                      {openQuestions}
+                      <openQuestions/>
                     </List>
                 </Dialog>
               </TableCell>
