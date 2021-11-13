@@ -102,15 +102,13 @@ function Quiz() {
                     </Toolbar>
                     </AppBar>
                     <List>
-                      <ul>
                         {questions.map(question => {
                           return (
-                            <li key={question.id}>
+                            <div key={question.id}>
                               {question.content}
-                            </li>
+                            </div>
                           )
                         })}
-                      </ul>
                     </List>
                 </Dialog>
               </TableCell>
