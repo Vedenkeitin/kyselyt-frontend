@@ -26,7 +26,7 @@ function Quiz() {
 
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
-  const [questions, setQuestions] = useState({});
+  const [questions, setQuestions] = useState([]);
 
   //hakee datan
   useEffect(() => {
@@ -44,20 +44,14 @@ function Quiz() {
     console.log(questions);
     setOpen(true);
     setQuestions(questions);
-    const content = questions.map((q) =>
-        <div key={q.id}>
-          <p>{q.content}</p>
-        </div>
-      );
-        return (
-          <div>{content}</div>
-    );
   };
 
   //sulkee kyseisen kyslyn kysymykset
   const closeQuestions = () => {
       setOpen(false);
   }
+
+  
 
   return (
     <div className="App">
@@ -108,7 +102,15 @@ function Quiz() {
                     </Toolbar>
                     </AppBar>
                     <List>
-                      {questions[0].content}
+                      <ul>
+                        {questions.map(question => {
+                          return (
+                            <li key={question.id}>
+                              {question.content}
+                            </li>
+                          )
+                        })}
+                      </ul>
                     </List>
                 </Dialog>
               </TableCell>
