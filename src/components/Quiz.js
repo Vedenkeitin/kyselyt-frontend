@@ -32,7 +32,7 @@ function Quiz() {
   const [questions, setQuestions] = useState([]);
   const [answer, setAnswer] = useState();
 
-  //hakee datan
+  //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
     fetch('https://kyselybackend.herokuapp.com/rest/quizzes')
       .then(response => response.json())
@@ -43,7 +43,7 @@ function Quiz() {
       .catch(err => console.error(err))
   }, [])
 
-  //avaa valitun kyselyn kysymykset
+  //avaa valitun kyselyn kysymykset ja tallennetaan keselyn kysymykset questions-stateen
   const openQuestions = (questions) => {
     console.log(questions);
     setOpen(true);
@@ -69,6 +69,7 @@ function Quiz() {
   }
 
   return (
+    //Taulukko, jossa näkyy kaikki kyselyt
     <div className="App">
       <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -90,7 +91,7 @@ function Quiz() {
                       Answer
                   </Button>
 
-                  {/* Tästä alkaa dialogin avaaminen */}
+                  {/* Dialogin avaaminen, missä näkyy kyselyn kysymykset */}
                   <Dialog
                     fullScreen
                     open={open}
@@ -107,9 +108,7 @@ function Quiz() {
                         >
                         <CloseIcon/>
                         </IconButton>
-                        
-                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                                
+                        <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div"> 
                         </Typography>
                         <Button autoFocus color="inherit" onClick={submitQuestions}>
                             submit
@@ -121,10 +120,9 @@ function Quiz() {
                           return (
                             <div key={question.id}>
                               <p>{question.content}</p>
-                              
+                              {/* AnswerForm-komponentin lisääminen */}
                               <AnswerForm question={question} />
                             </div>
-                            
                           )
                         })}
                     </List>
