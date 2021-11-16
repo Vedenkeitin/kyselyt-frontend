@@ -33,7 +33,7 @@ function Quiz() {
 
   //hakee datan
   useEffect(() => {
-    fetch('https://kyselybackend.herokuapp.com/quizRest')
+    fetch('https://kyselybackend.herokuapp.com/rest/quizzes')
       .then(response => response.json())
       .then(data => {
         console.log(data)
@@ -54,7 +54,10 @@ function Quiz() {
       setOpen(false);
   }
 
-  
+  //lähtetään vastatukset
+  const submitQuestions = () => {
+    setOpen(false);
+  }
 
   return (
     <div className="App">
@@ -99,7 +102,7 @@ function Quiz() {
                         <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
                                 
                         </Typography>
-                        <Button autoFocus color="inherit" onClick={closeQuestions}>
+                        <Button autoFocus color="inherit" onClick={submitQuestions}>
                             submit
                         </Button>
                     </Toolbar>
