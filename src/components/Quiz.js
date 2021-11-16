@@ -17,6 +17,8 @@ import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
 import CloseIcon from '@mui/icons-material/Close';
 
+import TextareaAutosize from '@mui/material/TextareaAutosize';
+
 //Slide aukeavalle näytölle
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -27,6 +29,7 @@ function Quiz() {
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [questions, setQuestions] = useState([]);
+  const [answer, setAnswer] = useState([]);
 
   //hakee datan
   useEffect(() => {
@@ -46,7 +49,7 @@ function Quiz() {
     setQuestions(questions);
   };
 
-  //sulkee kyseisen kyslyn kysymykset
+  //sulkee kyseisen kyselyn kysymykset
   const closeQuestions = () => {
       setOpen(false);
   }
@@ -105,7 +108,12 @@ function Quiz() {
                         {questions.map(question => {
                           return (
                             <div key={question.id}>
-                              {question.content}
+                              <p>{question.content}</p>
+                              <TextareaAutosize
+                                aria-label="minimum height"
+                                minRows={3}
+                                style={{ width: 500 }}
+                              />
                             </div>
                           )
                         })}
