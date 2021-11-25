@@ -30,7 +30,10 @@ function Quiz() {
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [questions, setQuestions] = useState([]);
-  const [answer, setAnswer] = useState();
+  const [answer, setAnswer] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [answerData, setAnswerData] = useState({id: '', content: ''})
+  const [ aDataList, setADataList] = useState([answerData])
 
   //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
@@ -46,6 +49,16 @@ function Quiz() {
   //avaa valitun kyselyn kysymykset ja tallennetaan keselyn kysymykset questions-stateen
   const openQuestions = (questions) => {
     console.log(questions);
+    let newArr = [...answers];
+    questions.map(q => {
+      console.log(q) 
+      newArr.push({id: q.id, content: ""})
+      setAnswerData({id: "2", content: "aa"})
+    })
+    console.log(newArr)
+    setADataList([...aDataList, answerData])
+
+    console.log('answers', aDataList)
     setOpen(true);
     setQuestions(questions);
   };
@@ -56,7 +69,7 @@ function Quiz() {
   }
 
   //lähtetään vastatukset
-  const submitQuestions = () => {
+  const submitAnswers = () => {
     let request = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -66,6 +79,13 @@ function Quiz() {
       .then(response => response.json())
       .then(data => setAnswer({}));
     setOpen(false);
+  }
+
+  const handleAnswerChange = (e) => {
+    e.preventDefault()
+      
+    console.log('e.target', e.target)
+    console.log('e.id', e.target.id)
   }
 
   return (
@@ -110,7 +130,7 @@ function Quiz() {
                         </IconButton>
                         <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div"> 
                         </Typography>
-                        <Button autoFocus color="inherit" onClick={submitQuestions}>
+                        <Button autoFocus color="inherit" onClick={submitAnswers}>
                             submit
                         </Button>
                     </Toolbar>
@@ -121,7 +141,8 @@ function Quiz() {
                             <div key={question.id}>
                               <p>{question.content}</p>
                               {/* AnswerForm-komponentin lisääminen */}
-                              <AnswerForm question={question} />
+                              {/*<AnswerForm question={question} /> */}
+                              <textarea onChange={e => handleAnswerChange(e)} id={question.id} value={question.id}></textarea>
                             </div>
                           )
                         })}

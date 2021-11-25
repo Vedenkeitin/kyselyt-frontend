@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 const AnswerForm = (question) => {
     const [answer, setAnswer] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     //vastauksen lähetys
     const submitAnswer = (event) => {
@@ -18,6 +19,19 @@ const AnswerForm = (question) => {
             .then(response => response.json())
             .then(data => console.log(data));
         setAnswer('')
+    }
+
+    //lähtetään vastatukset
+    const submitQuestions = (event) => {
+        let request = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify
+        };
+        fetch('', request)
+        .then(response => response.json())
+        .then(data => setAnswer({}));
+        setOpen(false);
     }
 
     return (
