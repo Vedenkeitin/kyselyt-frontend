@@ -31,9 +31,16 @@ function Quiz() {
   const [open, setOpen] = React.useState(false);
   const [questions, setQuestions] = useState([]);
   const [answer, setAnswer] = useState([]);
-  const [answers, setAnswers] = useState([]);
   const [answerData, setAnswerData] = useState({id: '', content: ''})
   const [ aDataList, setADataList] = useState([answerData])
+
+/*  Moodle esimerkki **/
+  const [answers, setAnswers] = useState([]);
+  const updateAnswers = (item, index) => {
+    let newArr = [...answers];
+    newArr[index] = item;
+    setAnswers(newArr);
+  }
 
   //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
@@ -61,6 +68,7 @@ function Quiz() {
     console.log('answers', aDataList)
     setOpen(true);
     setQuestions(questions);
+    console.log('questions', questions)
   };
 
   //sulkee kyseisen kyselyn kysymykset
@@ -72,10 +80,11 @@ function Quiz() {
   const submitAnswers = () => {
     let request = {
       method: 'POST',
+      mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify
+      body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
-    fetch('', request)
+    fetch(`http://localhost:8080/rest/quizzes/1/save`, request)
       .then(response => response.json())
       .then(data => setAnswer({}));
     setOpen(false);
@@ -83,9 +92,7 @@ function Quiz() {
 
   const handleAnswerChange = (e) => {
     e.preventDefault()
-      
-    console.log('e.target', e.target)
-    console.log('e.id', e.target.id)
+    updateAnswers({qid: e.target.name, content: e.target.value}, e.target.id)  
   }
 
   return (
@@ -136,13 +143,13 @@ function Quiz() {
                     </Toolbar>
                     </AppBar>
                     <List>
-                        {questions.map(question => {
+                        {questions.map((question, index) => {
                           return (
                             <div key={question.id}>
                               <p>{question.content}</p>
                               {/* AnswerForm-komponentin lisääminen */}
                               {/*<AnswerForm question={question} /> */}
-                              <textarea onChange={e => handleAnswerChange(e)} id={question.id} value={question.id}></textarea>
+                              <textarea onChange={e => handleAnswerChange(e)} id={index} name={question.id}></textarea>
                             </div>
                           )
                         })}
