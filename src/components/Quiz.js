@@ -77,7 +77,7 @@ function Quiz() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
-    fetch(`http://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
+    fetch(`https://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
       .then(response => response.json())
       .then(data => setAnswer({}));
     setOpen(false);
