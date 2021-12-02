@@ -44,7 +44,7 @@ function Quiz() {
 
   //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
-    fetch('https://kyselybackend.herokuapp.com/rest/quizzes')
+    fetch('https://hhkyselybackend.herokuapp.com/rest/quizzes')
       .then(response => response.json())
       .then(data => {
         console.log(data)
@@ -84,7 +84,7 @@ function Quiz() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
-    fetch(`http://localhost:8080/rest/quizzes/1/save`, request)
+    fetch(`http://hhkyselybackend.herokuapp.com/rest/quizzes/1/save`, request)
       .then(response => response.json())
       .then(data => setAnswer({}));
     setOpen(false);
