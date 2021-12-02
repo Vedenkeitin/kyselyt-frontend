@@ -31,6 +31,7 @@ function Quiz() {
   const [open, setOpen] = React.useState(false);
   const [questions, setQuestions] = useState([]);
   const [answer, setAnswer] = useState([]);
+  const [ quizId, setQuizId ]= useState([]);
   const [answerData, setAnswerData] = useState({id: '', content: ''})
   const [ aDataList, setADataList] = useState([answerData])
 
@@ -54,21 +55,13 @@ function Quiz() {
   }, [])
 
   //avaa valitun kyselyn kysymykset ja tallennetaan keselyn kysymykset questions-stateen
-  const openQuestions = (questions) => {
-    console.log(questions);
-    let newArr = [...answers];
-    questions.map(q => {
-      console.log(q) 
-      newArr.push({id: q.id, content: ""})
-      setAnswerData({id: "2", content: "aa"})
-    })
-    console.log(newArr)
-    setADataList([...aDataList, answerData])
-
-    console.log('answers', aDataList)
+  const openQuestions = (row) => {
+    console.log(row.questions);
+    
     setOpen(true);
-    setQuestions(questions);
-    console.log('questions', questions)
+    setQuizId(row.id)
+    setQuestions(row.questions);
+    console.log('questions', row.questions)
   };
 
   //sulkee kyseisen kyselyn kysymykset
@@ -84,7 +77,7 @@ function Quiz() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
-    fetch(`http://hhkyselybackend.herokuapp.com/rest/quizzes/1/save`, request)
+    fetch(`http://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
       .then(response => response.json())
       .then(data => setAnswer({}));
     setOpen(false);
@@ -114,7 +107,7 @@ function Quiz() {
             >
               <TableCell component="th" scope="row">{row.name}</TableCell>
               <TableCell component="th" scope="row">
-                  <Button onClick={() => openQuestions(row.questions)}>
+                  <Button onClick={() => openQuestions(row)}>
                       Vastaa
                   </Button>
 
