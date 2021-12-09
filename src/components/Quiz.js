@@ -22,6 +22,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
 
 import AnswerForm from './AnswerForm'
 
@@ -73,6 +75,7 @@ function Quiz() {
 
   //sulkee kyseisen kyselyn kysymykset
   const closeQuestions = () => {
+    setAnswers([])
     setOpen(false);
   }
 
@@ -84,20 +87,35 @@ function Quiz() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
-    fetch(`https://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
+    //fetch(`https://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
+    fetch(`http://localhost:8080/rest/quizzes/${quizId}/save`, request)
       .then(response => response.json())
       .then(data => setAnswer({}));
+    setAnswers([])
     setOpen(false);
   }
-
+  // tallentaa {qid, content}
   const handleAnswerChange = (e) => {
-    console.log(e)
-    console.log(e.target.value)
-    console.log(e.target.name)
-    console.log(e.target.id)
-    console.log(answers)
     e.preventDefault()
     updateAnswers({ qid: e.target.name, content: e.target.value }, e.target.id)
+  }
+  // en saanut e.target.id toimmaan material uin kanssa, niin tämmönen ratkasu. Tallentaa {qid, content}
+  const handleRadioChange = (e, index) => {
+    e.preventDefault()
+    updateAnswers({ qid: e.target.name, content: e.target.value }, index)
+  }
+  // checkbox handler, Tallentaa listan [ {qid, content}, null, null {qid, content} ]
+  const handleCheckboxChange = (e, index, i) => {
+    let checkArr = []
+    if (answers[index] !== undefined) {
+      checkArr = [...answers[index]];
+    }
+    if (e.target.checked) {
+      checkArr[i] = { qid: e.target.name, content: e.target.value };
+    } else {
+      checkArr[i] = null
+    }
+    updateAnswers(checkArr, index)
   }
 
   return (
@@ -153,14 +171,11 @@ function Quiz() {
                       alignItems: 'center',
                       width: '100%'
                     }}>
+                      {/* KYSYMYSLISTA */}
                       {questions.map((question, index) => {
                         return (
                           <div style={{ width: '60%', minWidth: '500px' }} key={question.id}>
-
                             <p>{question.content}</p>
-                            {/* AnswerForm-komponentin lisääminen */}
-                            {/*<AnswerForm question={question} /> */}
-
                             {question.type === null &&
                               <textarea
                                 onChange={e => handleAnswerChange(e)}
@@ -175,46 +190,39 @@ function Quiz() {
                                 id={index}
                                 name={question.id}
                                 style={{ width: '100%', height: '60px' }}
-                              ></textarea>}
+                              ></textarea>
+                            }
                             {question.type === 'radiobutton' &&
-                              <FormControl component="fieldset" name={question.content} id={index}>
+                              <FormControl component="fieldset" name={question.id.toString()} id={index}>
                                 <RadioGroup
                                   aria-label={question.content}
                                   name={question.id.toString()}
-                                  id={index} // GET ID NOT WORKING FOR e.target.id
-                                  onChange={e => handleAnswerChange(e)}
+                                  id={index} // MUI ID NOT WORKING FOR e.target.id
+                                  onChange={e => handleRadioChange(e, index)}
                                 >
                                   {question.options.map((option, i) => {
-                                  return <FormControlLabel key={i} value={option} control={<Radio />} label={option} />
+                                    return <FormControlLabel key={i} value={option} control={<Radio />} label={option} id='2' />
                                   })}
-                                  
+
                                 </RadioGroup>
                               </FormControl>
-                            }{/* TÄMÄ TOIMII
-                            {question.type === 'radiobutton' &&
-
-
-
-
-
-                              <div
-                                //onChange={e => handleAnswerChange(e)}
-                                id={index}
-                              >
-                                <div onChange={e => handleAnswerChange(e)}>
-                                  {question.options.map(option => {
-                                    return <label>
-                                      <input key={option} type="radio" value={option} name={question.id} /> {option}
-                                    </label>
-
-
-                                  })}
-                                </div>
-                              </div>
                             }
-
-                             */}
-                            {/*CHECKBOX NEXT*/}
+                            {question.type === 'checkbox' &&
+                              <FormControl component="fieldset" name={question.id.toString()} id={index}>
+                                <FormGroup name={question.id.toString()}>
+                                  {question.options.map((option, i) => {
+                                    return <FormControlLabel
+                                      key={i}
+                                      onChange={(e) => handleCheckboxChange(e, index, i)}
+                                      control={<Checkbox />}
+                                      label={option}
+                                      value={option}
+                                      name={question.id.toString()}
+                                      id={index} />
+                                  })}
+                                </FormGroup>
+                              </FormControl>
+                            }
 
                           </div>
                         )
