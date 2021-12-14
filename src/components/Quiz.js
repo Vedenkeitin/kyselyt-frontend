@@ -100,12 +100,18 @@ function Quiz() {
     updateAnswers({ qid: e.target.name, content: e.target.value }, e.target.id)
   }
   // en saanut e.target.id toimmaan material uin kanssa, niin tämmönen ratkasu. Tallentaa {qid, content}
-  const handleRadioChange = (e, index) => {
-    e.preventDefault()
+  const handleRadioChange = (e, index ) => {
+    e.preventDefault()    
     updateAnswers({ qid: e.target.name, content: e.target.value }, index)
   }
-  // checkbox handler, Tallentaa listan [ {qid, content}, null, null {qid, content} ]
+  // checkbox handler, Tallentaa jokaiselle kohdalle oman indexin staten listassa, joko NULL tai {qid, content}, null, null {qid, content} 
   const handleCheckboxChange = (e, index, i) => {
+    if (e.target.checked) {
+      updateAnswers({ qid: e.target.name, content: e.target.value }, i)
+    } else {
+      updateAnswers(null, i)
+    }
+    /* VANHA RATKAISU
     let checkArr = []
     if (answers[index] !== undefined) {
       checkArr = [...answers[index]];
@@ -116,8 +122,11 @@ function Quiz() {
       checkArr[i] = null
     }
     updateAnswers(checkArr, index)
+    */
   }
 
+
+  var qindex = -1;
   return (
     //Taulukko, jossa näkyy kaikki kyselyt
     <div className="App">
@@ -173,13 +182,14 @@ function Quiz() {
                     }}>
                       {/* KYSYMYSLISTA */}
                       {questions.map((question, index) => {
+                        qindex = qindex + 1
                         return (
                           <div style={{ width: '60%', minWidth: '500px' }} key={question.id}>
                             <p>{question.content}</p>
                             {question.type === null &&
                               <textarea
                                 onChange={e => handleAnswerChange(e)}
-                                id={index}
+                                id={qindex}
                                 name={question.id}
                                 style={{ width: '100%', height: '60px' }}
                               ></textarea>
@@ -187,38 +197,45 @@ function Quiz() {
                             {question.type === 'text' &&
                               <textarea
                                 onChange={e => handleAnswerChange(e)}
-                                id={index}
+                                id={qindex}
                                 name={question.id}
                                 style={{ width: '100%', height: '60px' }}
                               ></textarea>
                             }
                             {question.type === 'radiobutton' &&
-                              <FormControl component="fieldset" name={question.id.toString()} id={index}>
+                              <FormControl component="fieldset" name={question.id.toString()} id={qindex}>
                                 <RadioGroup
                                   aria-label={question.content}
                                   name={question.id.toString()}
-                                  id={index} // MUI ID NOT WORKING FOR e.target.id
-                                  onChange={e => handleRadioChange(e, index)}
+                                  id={qindex} // MUI ID NOT WORKING FOR e.target.id
                                 >
                                   {question.options.map((option, i) => {
-                                    return <FormControlLabel key={i} value={option} control={<Radio />} label={option} id='2' />
+                                    var ix = qindex
+                                    return <FormControlLabel 
+                                    key={i} 
+                                    value={option} 
+                                    control={<Radio />} 
+                                    label={option} 
+                                    onChange={e => handleRadioChange(e, ix )}/>
                                   })}
 
                                 </RadioGroup>
                               </FormControl>
                             }
                             {question.type === 'checkbox' &&
-                              <FormControl component="fieldset" name={question.id.toString()} id={index}>
+                              <FormControl component="fieldset" name={question.id.toString()} id={qindex}>
                                 <FormGroup name={question.id.toString()}>
                                   {question.options.map((option, i) => {
+                                    i = qindex
+                                    qindex = qindex + 1
                                     return <FormControlLabel
                                       key={i}
-                                      onChange={(e) => handleCheckboxChange(e, index, i)}
+                                      onChange={(e) => handleCheckboxChange(e, qindex, i)}
                                       control={<Checkbox />}
                                       label={option}
                                       value={option}
                                       name={question.id.toString()}
-                                      id={index} />
+                                      id={qindex} />
                                   })}
                                 </FormGroup>
                               </FormControl>
@@ -226,6 +243,8 @@ function Quiz() {
 
                           </div>
                         )
+
+
                       })}
                     </List>
                   </Dialog>
