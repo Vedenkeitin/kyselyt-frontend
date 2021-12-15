@@ -21,11 +21,9 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 
-import AnswerForm from './AnswerForm'
 
 
 //Slide aukeavalle näytölle
@@ -38,10 +36,8 @@ function Quiz() {
   const [data, setData] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [questions, setQuestions] = useState([]);
-  const [answer, setAnswer] = useState([]);
   const [quizId, setQuizId] = useState([]);
-  const [answerData, setAnswerData] = useState({ id: '', content: '' })
-  const [aDataList, setADataList] = useState([answerData])
+  const [quizName, setQuizName] = useState([]);
 
   /*  Moodle esimerkki **/
   const [answers, setAnswers] = useState([]);
@@ -51,24 +47,43 @@ function Quiz() {
     setAnswers(newArr);
   }
 
+  // Katsotaan onko annettu kyselyyn suoraa linkkiä
+  const queryParams = new URLSearchParams(window.location.search);
+  const qid = queryParams.get('qid');
+  
   //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
     //fetch('https://hhkyselybackend.herokuapp.com/rest/quizzes')
+    // muista https SSSSSSSSSSSSS <- kun herokussa
     fetch('http://localhost:8080/rest/quizzes')
       .then(response => response.json())
       .then(data => {
         console.log(data)
         setData((data))
+        qidOpener(data)
       })
       .catch(err => console.error(err))
   }, [])
 
+  // Avaa kyselyn, jos siihen on suora linkki
+  const qidOpener = (da) => {
+    if (qid !== null) {
+      openQuestions(da.find(d => {
+        if ( d.id === parseInt(qid)) {
+          return d
+        }
+        return null
+      }))
+    }
+  }
+
   //avaa valitun kyselyn kysymykset ja tallennetaan keselyn kysymykset questions-stateen
   const openQuestions = (row) => {
-    console.log(row.questions);
+    console.log(row);
 
     setOpen(true);
     setQuizId(row.id)
+    setQuizName(row.name)
     setQuestions(row.questions);
     console.log('questions', row.questions)
   };
@@ -88,11 +103,13 @@ function Quiz() {
       body: JSON.stringify(answers) // JSON.parse() mahdollisesti toimisi paremmin ja ilman virheitä
     };
     //fetch(`https://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
+    // muista https <- kun herokussa
     fetch(`http://localhost:8080/rest/quizzes/${quizId}/save`, request)
       .then(response => response.json())
-      .then(data => setAnswer({}));
+      .then(alert("Kiitos vastauksistasi!"))
     setAnswers([])
     setOpen(false);
+    
   }
   // tallentaa {qid, content}
   const handleAnswerChange = (e) => {
@@ -181,6 +198,7 @@ function Quiz() {
                       width: '100%'
                     }}>
                       {/* KYSYMYSLISTA */}
+                      {<h2>{quizName}</h2>}
                       {questions.map((question, index) => {
                         qindex = qindex + 1
                         return (
