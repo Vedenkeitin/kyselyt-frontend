@@ -54,8 +54,10 @@ function Quiz() {
   //hakee datan Heroku-palvelimelta halutusta endpointista
   useEffect(() => {
     //fetch('https://hhkyselybackend.herokuapp.com/rest/quizzes')
+    //http://localhost:8080/rest/quizzes
+    // https://kysely-hallinta-vedenkeitin.herokuapp.com/rest/quizzes
     // muista https SSSSSSSSSSSSS <- kun herokussa
-    fetch('http://localhost:8080/rest/quizzes')
+    fetch('https://kysely-hallinta-vedenkeitin.herokuapp.com/rest/quizzes')
       .then(response => response.json())
       .then(data => {
         console.log(data)
@@ -104,7 +106,7 @@ function Quiz() {
     };
     //fetch(`https://hhkyselybackend.herokuapp.com/rest/quizzes/${quizId}/save`, request)
     // muista https <- kun herokussa
-    fetch(`http://localhost:8080/rest/quizzes/${quizId}/save`, request)
+    fetch(`https://kysely-hallinta-vedenkeitin.herokuapp.com/rest/quizzes/${quizId}/save`, request)
       .then(response => response.json())
       .then(alert("Kiitos vastauksistasi!"))
     setAnswers([])
@@ -116,7 +118,7 @@ function Quiz() {
     e.preventDefault()
     updateAnswers({ qid: e.target.name, content: e.target.value }, e.target.id)
   }
-  // en saanut e.target.id toimmaan material uin kanssa, niin tämmönen ratkasu. Tallentaa {qid, content}
+  // Tallentaa {qid, content}
   const handleRadioChange = (e, index ) => {
     e.preventDefault()    
     updateAnswers({ qid: e.target.name, content: e.target.value }, index)
